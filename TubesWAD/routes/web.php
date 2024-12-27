@@ -4,9 +4,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MilihKamarController;
 use App\Http\Controllers\RiwayatMedisController;
 use App\Http\Controllers\KamarController;
+use App\Http\Controllers\JanjiTemuController;
+
 Route::get('/', function () {
     return view('welcome');
 });
+Route::resource('janji_temu', JanjiTemuController::class);
 
 Route::get('/kamar', [MilihKamarController::class, 'index'])->name('pemilihan_kamar.index');
 Route::post('/kamar/pilih/{pasien_id}', [MilihKamarController::class, 'pilihKamar'])->name('pemilihan_kamar.pilih');
