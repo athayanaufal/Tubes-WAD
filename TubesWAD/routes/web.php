@@ -5,10 +5,22 @@ use App\Http\Controllers\MilihKamarController;
 use App\Http\Controllers\RiwayatMedisController;
 use App\Http\Controllers\KamarController;
 use App\Http\Controllers\JanjiTemuController;
+use App\Http\Controllers\RegisterController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/register', function () {
+    return view('register');
+});
+
+Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
+
+Route::get('/register-success', function () {
+    return view('register-success');
+});
+
 Route::resource('janji_temu', JanjiTemuController::class);
 
 Route::get('/kamar', [MilihKamarController::class, 'index'])->name('pemilihan_kamar.index');
