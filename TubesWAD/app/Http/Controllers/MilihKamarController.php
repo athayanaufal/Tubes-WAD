@@ -12,7 +12,9 @@ class MilihKamarController extends Controller
     {
         $kamarTersedia = Kamar::where('status', 'tersedia')->get();
 
-        return view('pemilihan_kamar.index', compact('kamarTersedia'));
+        $pasiens = Pasien::all();
+        
+        return view('pemilihan_kamar.index', compact('kamarTersedia', 'pasiens'));
     }
 
     public function store(Request $request)
