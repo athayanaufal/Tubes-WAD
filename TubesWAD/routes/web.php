@@ -23,8 +23,8 @@ Route::get('/register-success', function () {
 
 Route::resource('janji_temu', JanjiTemuController::class);
 
-Route::get('/kamar', [MilihKamarController::class, 'index'])->name('pemilihan_kamar.index');
-Route::post('/kamar/pilih/{pasien_id}', [MilihKamarController::class, 'pilihKamar'])->name('pemilihan_kamar.pilih');
+Route::get('/pemilihan-kamar', [MilihKamarController::class, 'index'])->name('pemilihan_kamar.index');
+Route::post('/pemilihan-kamar', [MilihKamarController::class, 'store'])->name('pemilihan_kamar.store');
 
 Route::middleware('dokter')->group(function () {
     Route::get('/pasien/{pasien_id}/riwayat-medis', [RiwayatMedisController::class, 'index'])->name('riwayat_medis.index');
