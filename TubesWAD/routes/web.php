@@ -8,6 +8,8 @@ use App\Http\Controllers\JanjiTemuController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\KonsulController;
+use App\Http\Controllers\PuskesmasTerdekatController;
+use App\Http\Controllers\RujukanTerdekatController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -52,3 +54,24 @@ Route::put('/jadwal-janji-temu/{id}', [KonsulController::class, 'update'])->name
 Route::delete('/jadwal-janji-temu/{id}', [KonsulController::class, 'destroy'])->name('janji_temu.destroy');
 Route::get('/chat/{konsul_id}', [KonsulController::class, 'chat'])->name('chat');
 Route::post('/sudahi-percakapan/{konsul_id}', [KonsulController::class, 'sudahiPercakapan'])->name('sudahi.percakapan');
+
+//nico
+oute::get('/puskesmas', [PuskesmasTerdekatController::class, 'index'])->name('puskesmas.index');
+Route::get('/puskesmas/create', [PuskesmasTerdekatController::class, 'create'])->name('puskesmas.create');
+Route::post('/puskesmas', [PuskesmasTerdekatController::class, 'store'])->name('puskesmas.store');
+Route::get('/puskesmas/{puskesmas}', [PuskesmasTerdekatController::class, 'show'])->name('puskesmas.show');
+Route::get('/puskesmas/{puskesmas}/edit', [PuskesmasTerdekatController::class, 'edit'])->name('puskesmas.edit');
+Route::put('/puskesmas/{puskesmas}', [PuskesmasTerdekatController::class, 'update'])->name('puskesmas.update');
+Route::delete('/puskesmas/{puskesmas}', [PuskesmasTerdekatController::class, 'destroy'])->name('puskesmas.destroy');
+
+Route::get('/puskesmas/search/terdekat', [PuskesmasTerdekatController::class, 'search'])->name('puskesmas.search');
+
+Route::get('/rujukan/terdekat', [RujukanTerdekatController::class, 'index'])->name('rujukan.index');
+
+
+Route::get('/rujukan/create', [RujukanTerdekatController::class, 'create'])->name('rujukan.create');
+Route::post('/rujukan', [RujukanTerdekatController::class, 'store'])->name('rujukan.store');
+Route::get('/rujukan/{rujukan}', [RujukanTerdekatController::class, 'show'])->name('rujukan.show');
+Route::get('/rujukan/{rujukan}/edit', [RujukanTerdekatController::class, 'edit'])->name('rujukan.edit');
+Route::put('/rujukan/{rujukan}', [RujukanTerdekatController::class, 'update'])->name('rujukan.update');
+Route::delete('/rujukan/{rujukan}', [RujukanTerdekatController::class, 'destroy'])->name('rujukan.destroy');
