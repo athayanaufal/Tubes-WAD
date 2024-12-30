@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Puskesmas;
+use App\Models\puskesmasterdekat;
 use Illuminate\Http\Request;
+use App\Models\puskesmasterdekat as Puskesmas;
 
 class PuskesmasTerdekatController extends Controller
 {
@@ -61,4 +62,25 @@ class PuskesmasTerdekatController extends Controller
         $puskesmas->delete();
         return redirect()->route('puskesmas.index')->with('success', 'Puskesmas berhasil dihapus.');
     }
+    public function search(Request $request)
+{
+    $latitude = $request->input('latitude');
+    $longitude = $request->input('longitude');
+    
+    
+    $puskesmas = Puskesmas::select('*')
+        ->selectRaw('(
+            6371 * acos(
+                cos(radians(?)) * 
+                cos(radians(latitude)) * 
+                cos(radians(?) - radians(longitude)) + 
+                sin(radians(?)) * 
+                sin(radians(latitude))
+            )
+        ) AS distance', [$latitude, $longitude, $latitude])
+        ->orderBy('distance')
+        ->get();
+
+    return view('puskesmas.index', compact('puskesmas'));
+}
 }
