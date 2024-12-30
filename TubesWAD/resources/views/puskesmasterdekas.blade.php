@@ -1,0 +1,361 @@
+{{-- resources/views/puskesmas/index.blade.php --}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Puskesmas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .btn-danger {
+            background-color: #f44336;
+        }
+        
+        .btn-warning {
+            background-color: #ff9800;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-form {
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <div class="card">
+            <h1>Daftar Puskesmas</h1>
+            <a href="{{ route('puskesmas.create') }}" class="btn">Tambah Puskesmas</a>
+
+            <div class="search-form card">
+                <h2>Cari Puskesmas Terdekat</h2>
+                <form action="{{ route('puskesmas.search') }}" method="GET" id="searchForm">
+                    <div class="form-group">
+                        <label for="latitude">Latitude:</label>
+                        <input type="text" id="latitude" name="latitude" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="longitude">Longitude:</label>
+                        <input type="text" id="longitude" name="longitude" required>
+                    </div>
+                    
+                    <button type="button" class="btn" onclick="getLocation()">Gunakan Lokasi Saya</button>
+                    <button type="submit" class="btn">Cari Puskesmas Terdekat</button>
+                </form>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Alamat</th>
+                        <th>Telepon</th>
+                        <th>Koordinat</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($puskesmas as $p)
+                        <tr>
+                            <td>{{ $p->nama }}</td>
+                            <td>{{ $p->alamat }}</td>
+                            <td>{{ $p->telepon ?? '-' }}</td>
+                            <td>{{ $p->latitude }}, {{ $p->longitude }}</td>
+                            <td class="action-buttons">
+                                <a href="{{ route('puskesmas.show', $p->id) }}" class="btn">Detail</a>
+                                <a href="{{ route('puskesmas.edit', $p->id) }}" class="btn btn-warning">Edit</a>
+                                <form action="{{ route('puskesmas.destroy', $p->id) }}" method="POST" style="display: inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation tidak didukung oleh browser ini.");
+            }
+        }
+
+        function showPosition(position) {
+            document.getElementById("latitude").value = position.coords.latitude;
+            document.getElementById("longitude").value = position.coords.longitude;
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User menolak permintaan geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Informasi lokasi tidak tersedia.");
+                    break;
+                case error.TIMEOUT:
+                    alert("Permintaan untuk mendapatkan lokasi user timeout.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("Terjadi error yang tidak diketahui.");
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
+
+{{-- resources/views/puskesmas/create.blade.php --}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Puskesmas</title>
+    <style>
+        /* Gunakan styling yang sama seperti di index */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Tambah Puskesmas Baru</h1>
+            
+            <form action="{{ route('puskesmas.store') }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label for="nama">Nama Puskesmas:</label>
+                    <input type="text" id="nama" name="nama" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="alamat">Alamat:</label>
+                    <input type="text" id="alamat" name="alamat" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="latitude">Latitude:</label>
+                    <input type="text" id="latitude" name="latitude" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="longitude">Longitude:</label>
+                    <input type="text" id="longitude" name="longitude" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="telepon">Telepon:</label>
+                    <input type="text" id="telepon" name="telepon">
+                </div>
+
+                <button type="button" class="btn" onclick="getLocation()">Gunakan Lokasi Saat Ini</button>
+                <button type="submit" class="btn">Simpan</button>
+                <a href="{{ route('puskesmas.index') }}" class="btn btn-danger">Batal</a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Gunakan script getLocation yang sama seperti di index
+    </script>
+</body>
+</html>
+
+{{-- resources/views/puskesmas/edit.blade.php --}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Puskesmas</title>
+    <style>
+        /* Gunakan styling yang sama seperti di index */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Edit Puskesmas</h1>
+            
+            <form action="{{ route('puskesmas.update', $puskesmas->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="form-group">
+                    <label for="nama">Nama Puskesmas:</label>
+                    <input type="text" id="nama" name="nama" value="{{ $puskesmas->nama }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="alamat">Alamat:</label>
+                    <input type="text" id="alamat" name="alamat" value="{{ $puskesmas->alamat }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="latitude">Latitude:</label>
+                    <input type="text" id="latitude" name="latitude" value="{{ $puskesmas->latitude }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="longitude">Longitude:</label>
+                    <input type="text" id="longitude" name="longitude" value="{{ $puskesmas->longitude }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="telepon">Telepon:</label>
+                    <input type="text" id="telepon" name="telepon" value="{{ $puskesmas->telepon }}">
+                </div>
+
+                <button type="button" class="btn" onclick="getLocation()">Gunakan Lokasi Saat Ini</button>
+                <button type="submit" class="btn">Simpan Perubahan</button>
+                <a href="{{ route('puskesmas.index') }}" class="btn btn-danger">Batal</a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Gunakan script getLocation yang sama seperti di index
+    </script>
+</body>
+</html>
+
+{{-- resources/views/puskesmas/show.blade.php --}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Puskesmas</title>
+    <style>
+       
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Detail Puskesmas</h1>
+            
+            <div class="form-group">
+                <label>Nama Puskesmas:</label>
+                <p>{{ $puskesmas->nama }}</p>
+            </div>
+
+            <div class="form-group">
+                <label>Alamat:</label>
+                <p>{{ $puskesmas->alamat }}</p>
+            </div>
+
+            <div class="form-group">
+                <label>Koordinat:</label>
+                <p>{{ $puskesmas->latitude }}, {{ $puskesmas->longitude }}</p>
+            </div>
+
+            <div class="form-group">
+                <label>Telepon:</label>
+                <p>{{ $puskesmas->telepon ?? '-' }}</p>
+            </div>
+
+            <a href="{{ route('puskesmas.edit', $puskesmas->id) }}" class="btn btn-warning">Edit</a>
+            <a href="{{ route('puskesmas.index') }}" class="btn">Kembali</a>
+        </div>
+    </div>
+</body>
+</html>
