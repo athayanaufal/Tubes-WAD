@@ -8,7 +8,7 @@ class CreateRujukanTerdekatTable extends Migration
 {
     public function up()
     {
-        Schema::create('rujukan', function (Blueprint $table) {
+        Schema::create('rujukan_terdekat', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
             $table->string('alamat');
@@ -19,8 +19,9 @@ class CreateRujukanTerdekatTable extends Migration
             $table->timestamps();
         });
     }
+
     public function down()
     {
-        Schema::dropIfExists('rujukan');
+        Schema::dropIfExists('rujukan_terdekat');
     }
 }
