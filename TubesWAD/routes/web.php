@@ -11,6 +11,7 @@ use App\Http\Controllers\KonsulController;
 use App\Http\Controllers\PuskesmasTerdekatController;
 use App\Http\Controllers\RujukanTerdekatController;
 use App\Http\Controllers\KetersediaanDokterController;
+use App\Http\Controllers\RegisterController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,6 +38,11 @@ Route::prefix('kamar')->group(function () {
     Route::delete('/{id}', [KamarController::class, 'destroy'])->name('kamar.destroy'); // Hapus kamar
 });
 
+Route::get('/register', function () {
+    return view('register');
+});
+
+Route::post('/register', [RegisterController::class, 'store']);
 
 // punya depi
 Route::get('/login', function () {
