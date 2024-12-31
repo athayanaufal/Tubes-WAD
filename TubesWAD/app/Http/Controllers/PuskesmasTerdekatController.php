@@ -4,19 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\puskesmasterdekat;
 use Illuminate\Http\Request;
-use App\Models\puskesmasterdekat as Puskesmas;
 
 class PuskesmasTerdekatController extends Controller
 {
     public function index()
     {
-        $puskesmas = Puskesmas::all();
-        return view('puskesmas.index', compact('puskesmas'));
+        $puskesmas = puskesmasterdekat::all();
+        return view('puskesmasterdekat.index', compact('puskesmas'));
     }
 
     public function create()
     {
-        return view('puskesmas.create');
+        return view('puskesmasterdekat.create');
     }
 
     public function store(Request $request)
@@ -29,23 +28,23 @@ class PuskesmasTerdekatController extends Controller
             'telepon' => 'nullable|string|max:15',
         ]);
 
-        Puskesmas::create($request->all());
-        return redirect()->route('puskesmas.index')->with('success', 'Puskesmas berhasil ditambahkan.');
+        puskesmasterdekat::create($request->all());
+        return redirect()->route('puskesmasterdekat.index')->with('success', 'Puskesmas berhasil ditambahkan.');
     }
 
-    public function show(Puskesmas $puskesmas)
+    public function show(puskesmasterdekat $puskesmas)
     {
-        return view('puskesmas.show', compact('puskesmas'));
+        return view('puskesmasterdekat.show', compact('puskesmas'));
     }
 
-    public function edit(Puskesmas $puskesmas)
+    public function edit(puskesmasterdekat $puskesmas)
     {
-        return view('puskesmas.edit', compact('puskesmas'));
+        return view('puskesmasterdekat.edit', compact('puskesmas'));
     }
 
-    public function update(Request $request, Puskesmas $puskesmas)
+    public function update(Request $request, puskesmasterdekat $puskesmas)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
             'latitude' => 'required|numeric',
@@ -53,34 +52,13 @@ class PuskesmasTerdekatController extends Controller
             'telepon' => 'nullable|string|max:15',
         ]);
 
-        $puskesmas->update($request->all());
-        return redirect()->route('puskesmas.index')->with('success', 'Puskesmas berhasil diperbarui.');
+        $puskesmas->update($validated);
+        return redirect()->route('puskesmasterdekat.index')->with('success', 'Puskesmas berhasil diperbarui.');
     }
 
-    public function destroy(Puskesmas $puskesmas)
+    public function destroy(puskesmasterdekat $puskesmas)
     {
         $puskesmas->delete();
-        return redirect()->route('puskesmas.index')->with('success', 'Puskesmas berhasil dihapus.');
+        return redirect()->route('puskesmasterdekat.index')->with('success', 'Puskesmas berhasil dihapus.');
     }
-    public function search(Request $request)
-{
-    $latitude = $request->input('latitude');
-    $longitude = $request->input('longitude');
-    
-    
-    $puskesmas = Puskesmas::select('*')
-        ->selectRaw('(
-            6371 * acos(
-                cos(radians(?)) * 
-                cos(radians(latitude)) * 
-                cos(radians(?) - radians(longitude)) + 
-                sin(radians(?)) * 
-                sin(radians(latitude))
-            )
-        ) AS distance', [$latitude, $longitude, $latitude])
-        ->orderBy('distance')
-        ->get();
-
-    return view('puskesmas.index', compact('puskesmas'));
-}
 }
