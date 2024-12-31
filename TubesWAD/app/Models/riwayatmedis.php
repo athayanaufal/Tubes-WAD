@@ -2,23 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class riwayatmedis extends Model
+class RiwayatMedis extends Model
 {
     use HasFactory;
 
+    protected $table = 'riwayatmedis';
+
     protected $fillable = [
-        'pasien_id', 'dokter_id', 'diagnosis', 'obat', 'tanggal',
+        'pasien_id',
+        'diagnosa',
     ];
 
+    // Relasi ke model Pasien
     public function pasien()
     {
         return $this->belongsTo(Pasien::class);
-    }
-
-    public function dokter()
-    {
-        return $this->belongsTo(Dokter::class);
     }
 }

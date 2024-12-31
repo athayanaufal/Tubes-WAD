@@ -50,7 +50,7 @@
                 @foreach($riwayatMedis as $key => $riwayat)
                 <tr>
                     <td>{{ $key + 1 }}</td>
-                    <td>{{ $riwayat->pasien->nama }}</td>
+                    <td>{{ $riwayat->pasien->nama_pasien }}</td>
                     <td>{{ $riwayat->diagnosa }}</td>
                     <td>{{ $riwayat->tanggal_pemeriksaan }}</td>
                     <td>{{ $riwayat->tindakan }}</td>

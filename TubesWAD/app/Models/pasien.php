@@ -30,5 +30,9 @@ class Pasien extends Model
     {
         return $this->hasMany(Dokter::class);
     }
+    public function riwayatMedis()
+    {
+        return $this->hasMany(RiwayatMedis::class);
+    }
 }
 

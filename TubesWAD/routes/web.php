@@ -24,9 +24,11 @@ Route::post('/ketersediaandokter/filter', [KetersediaanDokterController::class, 
 Route::get('/', [KamarController::class, 'index'])->name('pilihkamar.index');
 Route::post('/pilihkamar', [KamarController::class, 'assignKamar'])->name('pilihkamar.store');
 
-Route::middleware('dokter')->group(function () {
-    Route::get('/pasien/{pasien_id}/riwayat-medis', [RiwayatMedisController::class, 'index'])->name('riwayat_medis.index');
-    Route::post('/pasien/{pasien_id}/riwayat-medis', [RiwayatMedisController::class, 'store'])->name('riwayat_medis.store');
+Route::prefix('riwayat-medis')->group(function () {
+    Route::get('/', [RiwayatMedisController::class, 'index'])->name('riwayatmedis.index');
+    Route::post('/', [RiwayatMedisController::class, 'store'])->name('riwayatmedis.store');
+    Route::put('/{riwayatMedis}', [RiwayatMedisController::class, 'update'])->name('riwayatmedis.update');
+    Route::delete('/{riwayatMedis}', [RiwayatMedisController::class, 'destroy'])->name('riwayatmedis.destroy');
 });
 
 Route::prefix('kamar')->group(function () {

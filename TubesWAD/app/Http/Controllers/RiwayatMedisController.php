@@ -8,35 +8,45 @@ use Illuminate\Http\Request;
 
 class RiwayatMedisController extends Controller
 {
-    public function __construct()
+    public function index()
     {
-        $this->middleware('dokter');  // Hanya dokter yang bisa mengakses
+        // Ambil semua riwayat medis beserta pasien
+        $riwayatMedis = RiwayatMedis::with('pasien')->get();
+
+        // Ambil semua pasien untuk dropdown atau kebutuhan lain
+        $pasiens = Pasien::all();
+
+        return view('riwayatmedis', compact('riwayatMedis', 'pasiens'));
     }
 
-    public function index($pasien_id)
+    public function store(Request $request)
     {
-        $riwayatMedis = RiwayatMedis::where('pasien_id', $pasien_id)->get();
+        $validatedData = $request->validate([
+            'pasien_id' => 'required|exists:pasien,id',
+            'diagnosa' => 'required|string|max:255',
+        ]);
 
-        return view('riwayat_medis.index', compact('riwayatMedis'));
+        RiwayatMedis::create($validatedData);
+
+        return redirect()->route('riwayatmedis.index')->with('success', 'Riwayat medis berhasil ditambahkan.');
     }
 
-    public function store(Request $request, $pasien_id)
+    public function update(Request $request, RiwayatMedis $riwayatMedis)
     {
-        $request->validate([
-            'diagnosis' => 'required',
-            'obat' => 'required',
-            'tanggal' => 'required|date',
+        $validatedData = $request->validate([
+            'pasien_id' => 'required|exists:pasien,id',
+            'diagnosa' => 'required|string|max:255',
         ]);
 
-        RiwayatMedis::create([
-            'pasien_id' => $pasien_id,
-            'dokter_id' => auth()->user()->id,
-            'diagnosis' => $request->diagnosis,
-            'obat' => $request->obat,
-            'tanggal' => $request->tanggal,
-        ]);
+        $riwayatMedis->update($validatedData);
 
-        return redirect()->route('riwayat_medis.index', $pasien_id)
-                         ->with('success', 'Riwayat medis berhasil ditambahkan.');
+        return redirect()->route('riwayatmedis.index')->with('success', 'Riwayat medis berhasil diperbarui.');
+    }
+
+    public function destroy(RiwayatMedis $riwayatMedis)
+    {
+        $riwayatMedis->delete();
+
+        return redirect()->route('riwayatmedis.index')->with('success', 'Riwayat medis berhasil dihapus.');
     }
 }
