@@ -10,33 +10,33 @@ class MilihKamarController extends Controller
 {
     public function index()
     {
-        // Menampilkan daftar kamar yang tersedia
         $kamarTersedia = Kamar::where('status', 'tersedia')->get();
 
-        return view('pemilihan_kamar.index', compact('kamarTersedia'));
+        $pasiens = Pasien::all();
+        
+        return view('pemilihan_kamar.index', compact('kamarTersedia', 'pasiens'));
     }
 
-    public function pilihKamar(Request $request, $pasien_id)
+    public function store(Request $request)
     {
-        $request->validate([
-            'kamar_id' => 'required|exists:kamar,id',
+        $validatedData = $request->validate([
+            'pasien_id' => 'required|exists:pasiens,id',
+            'kamar_id' => 'required|exists:kamars,id',
         ]);
 
-        // Cari kamar yang dipilih
-        $kamar = Kamar::findOrFail($request->kamar_id);
-
+        $kamar = Kamar::findOrFail($validatedData['kamar_id']);
+        
         if ($kamar->status !== 'tersedia') {
             return back()->with('error', 'Kamar yang dipilih tidak tersedia.');
         }
 
-        // Update status kamar menjadi "digunakan"
+        $pasien = Pasien::findOrFail($validatedData['pasien_id']);
+        
         $kamar->update(['status' => 'digunakan']);
 
-        // Update pasien dengan kamar yang dipilih
-        $pasien = Pasien::findOrFail($pasien_id);
         $pasien->update(['kamar_id' => $kamar->id]);
 
         return redirect()->route('pemilihan_kamar.index')
-            ->with('success', 'Kamar berhasil dipilih.');
+            ->with('success', 'Kamar berhasil dipilih untuk pasien.');
     }
 }
