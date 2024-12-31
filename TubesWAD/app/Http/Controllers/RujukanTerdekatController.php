@@ -6,19 +6,62 @@ use App\Models\rujukanterdekat;
 use Illuminate\Http\Request;
 use App\Models\rujukanterdekat as Rujukan;
 
-class RujukanController extends Controller
+class RujukanTerdekatController extends Controller
 {
     public function index(Request $request)
     {
-         
-        $latitude = $request->input('latitude');
-        $longitude = $request->input('longitude');
+        $rujukan = rujukanterdekat::all();
+        return view('rujukanterdekat.index', compact('rujukan'));
+    }
 
-        $rujukan = Rujukan::selectRaw("*, ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance", [$latitude, $longitude, $latitude])
-            ->having("distance", "<", 10) 
-            ->orderBy("distance")
-            ->get();
+    public function create()
+    {
+        return view('rujukanterdekat.create');
+    }
 
-        return view('rujukan.index', compact('rujukan'));
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
+            'jenis_layanan' => 'required|numeric',
+            'telepon' => 'nullable|string|max:15',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+        ]);
+
+        rujukanterdekat::create($request->all());
+        return redirect()->route('rujukanterdekat.index')->with('success', 'Rujukan berhasil ditambahkan.');
+    }
+
+    public function show(rujukanterdekat $rujukan)
+    {
+        return view('rujukanterdekat.show', compact('rujukan'));
+    }
+
+    public function edit(rujukanterdekat $rujukan)
+    {
+        return view('rujukanterdekat.edit', compact('rujukan'));
+    }
+
+    public function update(Request $request, rujukanterdekat $rujukan)
+    {
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
+            'jenis_layanan' => 'required|numeric',
+            'telepon' => 'nullable|string|max:15',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+        ]);
+
+        $rujukan->update($validated);
+        return redirect()->route('rujukanterdekat.index')->with('success', 'rujukan berhasil diperbarui.');
+    }
+
+    public function destroy(rujukanterdekat $rujukan)
+    {
+        $rujukan->delete();
+        return redirect()->route('rujukanterdekat.index')->with('success', 'rujukan berhasil dihapus.');
     }
 }
