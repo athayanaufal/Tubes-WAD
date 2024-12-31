@@ -10,11 +10,15 @@ use App\Http\Controllers\DokterController;
 use App\Http\Controllers\KonsulController;
 use App\Http\Controllers\PuskesmasTerdekatController;
 use App\Http\Controllers\RujukanTerdekatController;
+use App\Http\Controllers\KetersediaanDokterController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 Route::resource('janji_temu', JanjiTemuController::class);
+
+Route::get('/ketersediaandokter', [KetersediaanDokterController::class, 'index'])->name('ketersediaandokter');
+Route::post('/ketersediaandokter/filter', [KetersediaanDokterController::class, 'filter'])->name('filter-ketersediaandokter');
 
 Route::get('/kamar', [MilihKamarController::class, 'index'])->name('pemilihan_kamar.index');
 Route::post('/kamar/pilih/{pasien_id}', [MilihKamarController::class, 'pilihKamar'])->name('pemilihan_kamar.pilih');
