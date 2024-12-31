@@ -1,24 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Models;
 
-use App\Models\rujukanterdekat;
-use Illuminate\Http\Request;
-use App\Models\rujukanterdekat as Rujukan;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class RujukanController extends Controller
+class rujukanterdekat extends Model
 {
-    public function index(Request $request)
-    {
-         
-        $latitude = $request->input('latitude');
-        $longitude = $request->input('longitude');
+    use HasFactory;
 
-        $rujukan = Rujukan::selectRaw("*, ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance", [$latitude, $longitude, $latitude])
-            ->having("distance", "<", 10) 
-            ->orderBy("distance")
-            ->get();
+    protected $table = 'rujukan_terdekat';
 
-        return view('rujukan.index', compact('rujukan'));
-    }
+    protected $fillable = [
+        'nama',
+        'alamat',
+        'telepon',
+        'jenis_layanan',
+        'latitude',
+        'longitude',
+    ];
 }
