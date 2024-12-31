@@ -68,22 +68,18 @@ Route::get('/chat/{konsul_id}', [KonsulController::class, 'chat'])->name('chat')
 Route::post('/sudahi-percakapan/{konsul_id}', [KonsulController::class, 'sudahiPercakapan'])->name('sudahi.percakapan');
 
 //nico
-oute::get('/puskesmas', [PuskesmasTerdekatController::class, 'index'])->name('puskesmas.index');
-Route::get('/puskesmas/create', [PuskesmasTerdekatController::class, 'create'])->name('puskesmas.create');
-Route::post('/puskesmas', [PuskesmasTerdekatController::class, 'store'])->name('puskesmas.store');
-Route::get('/puskesmas/{puskesmas}', [PuskesmasTerdekatController::class, 'show'])->name('puskesmas.show');
-Route::get('/puskesmas/{puskesmas}/edit', [PuskesmasTerdekatController::class, 'edit'])->name('puskesmas.edit');
-Route::put('/puskesmas/{puskesmas}', [PuskesmasTerdekatController::class, 'update'])->name('puskesmas.update');
-Route::delete('/puskesmas/{puskesmas}', [PuskesmasTerdekatController::class, 'destroy'])->name('puskesmas.destroy');
+Route::get('/puskesmasterdekat', [PuskesmasTerdekatController::class, 'index'])->name('puskesmasterdekat.index');
+Route::get('/puskesmasterdekat/create', [PuskesmasTerdekatController::class, 'create'])->name('puskesmasterdekat.create');
+Route::post('/puskesmasterdekat', [PuskesmasTerdekatController::class, 'store'])->name('puskesmasterdekat.store');
+Route::get('/puskesmasterdekat/{puskesmas}', [PuskesmasTerdekatController::class, 'show'])->name('puskesmasterdekat.show');
+Route::get('/puskesmasterdekat/{p}/edit', [PuskesmasTerdekatController::class, 'edit'])->name('puskesmasterdekat.edit');
+Route::delete('/puskesmasterdekat/{p}', [PuskesmasTerdekatController::class, 'destroy'])->name('puskesmasterdekat.destroy');
+Route::put('/puskesmasterdekat', [PuskesmasTerdekatController::class, 'update'])->name('puskesmasterdekat.update');
 
-Route::get('/puskesmas/search/terdekat', [PuskesmasTerdekatController::class, 'search'])->name('puskesmas.search');
-
-Route::get('/rujukan/terdekat', [RujukanTerdekatController::class, 'index'])->name('rujukan.index');
-
-
-Route::get('/rujukan/create', [RujukanTerdekatController::class, 'create'])->name('rujukan.create');
-Route::post('/rujukan', [RujukanTerdekatController::class, 'store'])->name('rujukan.store');
-Route::get('/rujukan/{rujukan}', [RujukanTerdekatController::class, 'show'])->name('rujukan.show');
-Route::get('/rujukan/{rujukan}/edit', [RujukanTerdekatController::class, 'edit'])->name('rujukan.edit');
-Route::put('/rujukan/{rujukan}', [RujukanTerdekatController::class, 'update'])->name('rujukan.update');
-Route::delete('/rujukan/{rujukan}', [RujukanTerdekatController::class, 'destroy'])->name('rujukan.destroy');
+Route::get('/rujukanterdekat', [RujukanTerdekatController::class, 'index'])->name('rujukanterdekat.index');
+Route::get('/rujukanterdekat/create', [RujukanTerdekatController::class, 'create'])->name('rujukanterdekat.create');
+Route::post('/rujukanterdekat', [RujukanTerdekatController::class, 'store'])->name('rujukanterdekat.store');
+Route::get('/rujukanterdekat/{rujukan}', [RujukanTerdekatController::class, 'show'])->name('rujukanterdekat.show');
+Route::get('/rujukanterdekat/{p}/edit', [RujukanTerdekatController::class, 'edit'])->name('rujukanterdekat.edit');
+Route::delete('/rujukanterdekat/{p}', [RujukanTerdekatController::class, 'destroy'])->name('rujukanterdekat.destroy');
+Route::put('/rujukanterdekat', [RujukanTerdekatController::class, 'update'])->name('rujukanterdekat.update');
